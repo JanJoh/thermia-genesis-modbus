@@ -1,5 +1,9 @@
 #!/usr/bin/env python
+from pathlib import Path
+
 from setuptools import setup
+
+long_description = (Path(__file__).parent / "README.md").read_text(encoding="utf-8")
 
 
 setup(
@@ -9,6 +13,8 @@ setup(
     author_email="johan@generatorhallen.se",
     description="Python wrapper for getting data from Thermia Mega and Inverter heat pumps \
         via Modbus TCP.",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     include_package_data=True,
     url="https://github.com/JanJoh/thermia-genesis-modbus",
     license="MIT",
