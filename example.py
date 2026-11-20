@@ -2,9 +2,9 @@ import asyncio
 import logging
 from sys import argv
 
-from pythermiagenesis import ThermiaGenesis
-from pythermiagenesis import ThermiaConnectionError
-from pythermiagenesis.const import (
+from thermia_genesis_modbus import ThermiaGenesis
+from thermia_genesis_modbus import ThermiaConnectionError
+from thermia_genesis_modbus.const import (
         REGISTERS, 
         REG_INPUT, 
         KEY_ADDRESS, 
