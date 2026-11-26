@@ -15,6 +15,7 @@ from operator import itemgetter, attrgetter
 import logging
 
 from pyModbusTCP.client import ModbusClient
+from pyModbusTCP.constants import MB_EXCEPT_ERR
 from pyModbusTCP.utils import *
 
 from .const import *
@@ -62,6 +63,7 @@ class ThermiaGenesis:  # pylint:disable=too-many-instance-attributes
         self._kind = kind
         self._delay = delay
         self.MAX_REGISTERS = max_registers
+        self._refused = set()
 
     async def async_set(self, register, value):  # pylint:disable=too-many-branches
         """Write data to heat pump."""
@@ -307,6 +309,22 @@ class ThermiaGenesis:  # pylint:disable=too-many-instance-attributes
                         if scale != 1:
                             val = val / scale
                         raw_data[name] = val
+                elif self._client.last_error() == MB_EXCEPT_ERR:
+                    # The pump answered, and refused this block: one of its
+                    # registers does not exist on this model. Leave those
+                    # registers out instead of giving up on everything that
+                    # was still to be read.
+                    block = (regtype, start_address, length)
+                    if block not in self._refused:
+                        self._refused.add(block)
+                        _LOGGER.warning(
+                            "The heat pump refused %s registers %s-%s (%s); skipping: %s",
+                            regtype,
+                            start_address,
+                            chunk["end"],
+                            self._client.last_except_txt(),
+                            ", ".join(chunk["slots"]),
+                        )
                 else:
                     if self._client.last_error() > 0:
                         _LOGGER.error(f"error {self._client.last_error()}")

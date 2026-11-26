@@ -8,7 +8,7 @@ long_description = (Path(__file__).parent / "README.md").read_text(encoding="utf
 
 setup(
     name="thermia-genesis-modbus",
-    version="1.0.0",
+    version="1.1.0",
     author="Johan Isaksson",
     author_email="johan@generatorhallen.se",
     description="Python wrapper for getting data from Thermia Mega and Inverter heat pumps \
